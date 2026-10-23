@@ -1,72 +1,114 @@
 # StartPad
 
-![StartPad Preview](startpad-preview.png)
+![StartPad Preview](https://raw.githubusercontent.com/frankh93/StartPad/main/startpad-preview.png)
 
-A lightweight, native **macOS-style fullscreen application launcher** built as a [Windhawk](https://windhawk.net/) mod to replace the default Windows 11 Start menu.
-
-Inspired by Apple’s macOS Launchpad, **StartPad** provides an intuitive, distraction-free environment to browse, organize, and launch all your installed software with fluid animations and extensive customization.
+A native, macOS Launchpad-style fullscreen application launcher for Windows 11 built as a [Windhawk](https://windhawk.net/) mod. **StartPad** replaces the default Windows Start menu with a fluid, paginated app grid featuring drag-and-drop organization, interactive folders, customizable visual styling, and instant search.
 
 ---
 
 ## ✨ Features
 
-### 🚀 Flawless Start Menu Integration
-- **Direct Native Hook:** Intercepts Explorer's internal `ShowStartView` trigger directly in `twinui.pcshell.dll`, ensuring the native Windows Start menu never flickers or accidentally opens.
-- **Universal Triggers:** Opens seamlessly via:
+### 🚀 Seamless Start Replacement
+- **Native Hooking**: Intercepts Explorer's internal `XamlLauncher::ShowStartView` symbol directly in `twinui.pcshell.dll`, guaranteeing that the original Windows 11 Start menu never flickers or opens behind it.
+- **Universal Triggers**: Opens reliably with:
   - The **Windows Key**
   - **Ctrl + Esc**
-  - Left-clicking the taskbar **Start button** (on any monitor).
+  - Left-clicking the taskbar **Start button** on any monitor.
+- **Smart Click Dismissal**: Clicking outside open popup menus (such as the context menu, power menu, or options menu) safely dismisses the menu without accidentally closing the launcher.
+
+### 📄 Paginated Grid & Fluid Physics
+- **Horizontal Pagination**: Browse installed software across clean pages rather than scrolling through an endless vertical list.
+- **Multiple Ways to Flip Pages**:
+  - Click and drag anywhere to swipe.
+  - Scroll the mouse wheel (vertical or horizontal tilt).
+  - Click the bottom pagination dots.
+  - Use **Page Up** / **Page Down** or navigate across grid edges with the arrow keys.
+- **Predictable 2D Keyboard Navigation**: Seamlessly navigate row-by-row and column-by-column with the **Arrow keys** or **Tab**. Moving past the leftmost or rightmost column on a row automatically turns to the previous or next page.
+
+### 📁 Drag-and-Drop & Folder Management
+- **Drag-and-Drop Reordering**: **Click and hold** (~320 ms) any icon to pick it up, drag it to any grid slot, or hold it near the left/right screen edges to move it between pages.
+- **Create Folders**:
+  - **Drag & Drop**: Drag an app onto another app icon to automatically bundle them into a folder.
+  - **Menu Selection Mode**: Choose **Create folder** from the search bar menu, click to select multiple apps with checkmarks, and click the **Done (`✓`)** button (or press **Enter**) to generate a folder.
+- **Center-Out Folder Expansion**: Folders expand smoothly from the center of the screen with eased spring transitions.
+- **Inline Renaming**: When inside a folder, press **F2** or click the header title directly to rename it. Pressing **F2** while selecting a folder on the main grid also opens it directly in rename mode.
+- **Ungrouping & Removal**: Drag an icon outside an open folder window to return it to the main grid, or right-click any folder and select **Ungroup folder**.
+- **Persistent Storage**: All custom icon arrangements, folders, and visibility rules are saved automatically per user profile using Windhawk's native mod storage API (`Wh_GetModStoragePath`).
+
+### 🔍 Instant Search & Application Control
+- **Type-to-Search**: Start typing immediately when StartPad opens—no need to click the search bar first.
+- **Focus Indicator**: An always-visible blinking cursor shows active search focus, even on an empty query.
+- **Search in Hidden Apps**: A toggleable option inside the search bar menu allows search queries to find and launch apps that you have hidden from the main grid (displayed with normal opacity in search results).
+- **Run as Administrator**: Launch any highlighted application with elevated privileges using **Ctrl + Shift + Enter** or via the right-click menu.
+- **App Context Menu**: Right-click any app icon to **Open**, **Run as administrator**, **Open file location**, or **Hide**.
+
+### 🛠️ App Visibility & Maintenance
+- **Hide Distracting Apps**: Right-click any shortcut and choose **Hide** to tuck away utilities, background updaters, or unwanted tools.
+- **Batch Visibility Editor**: Access **Edit hidden apps** from the search menu to toggle visibility badges across all installed programs simultaneously.
+- **Automatic Uninstaller Filtering**: Cleans out junk shortcuts pointing to `unins000.exe`, `uninstall.exe`, and related maintenance links automatically.
+- **Reset Layout**: Restore the default alphabetical grid at any time through the options menu.
+
+### 🎨 Visuals, Theming & Legacy Fixes
+- **Adaptive Blurred Backdrop**: Freezes a multi-pass blurred screenshot of your current desktop with adjustable blur strengths (Off, Light, Medium, Strong) and darkness tinting.
+- **Two Visual Styles**:
+  - **MacOS Style**: Clean glass search pill with squircle folder sheets.
+  - **Windows 11 Fluent**: Acrylic-inspired search box with active system accent striping.
+- **Legacy Icon Border Cleanup**: Automatically detects low-resolution Win32 executables (such as 7-Zip) that Windows normally displays with an awkward 1px gray border box and empty padding, stripping the frame and smoothly upscaling the icon content using bilinear interpolation.
+- **Selection Card Styling**: Highlighted icons feature a semitransparent card enclosing both the icon and label, accompanied by smooth font enlargement on hover.
+- **Integrated Power Menu**: Bottom-right power button aligned with the pagination dots for quick access to **Lock**, **Sign out**, **Sleep**, **Shut down**, and **Restart**.
+- **Multilingual Support**: Fully localized interface strings for English, Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, and Korean.
 
 ---
 
-### 🎨 Visuals & Theming
-- **Adaptive Blurred Backdrop:** Takes an instant snapshot of your desktop and applies an adjustable multi-pass blur (Off, Light, Medium, or Strong) with custom tint darkness.
-- **Multiple Visual Styles:**
-  - **macOS Launchpad:** Clean glass search pill with rounded squircle folder containers.
-  - **Windows 11 Fluent:** Acrylic search bar with an accent-colored bottom indicator.
-- **Automatic System Theming:** Matches your active Windows light/dark theme and pulls your personalization accent color dynamically.
-- **Fluid Spring Animations:** Smooth physics-based page sliding, folder opening/closing from center screen, and layered fade transitions.
+## ⚖️ How StartPad Differs from Fullscreen Start
+
+Both **StartPad** and Rafael Mendes's **[fullscreen-start](https://github.com/RafaelMendes1407)** hook Explorer's `XamlLauncher::ShowStartView` to replace the Start menu with a fullscreen grid. Because both mods intercept the same low-level function, **they cannot be enabled simultaneously**.
+
+| Feature | StartPad | Fullscreen Start (`fullscreen-start`) |
+| :--- | :--- | :--- |
+| **Grid Architecture** | **Horizontal Pages** with pagination dots and page-swipe physics | **Single Vertical Scrolling** list |
+| **App Organization** | **Folders** (drag-and-drop & multi-select creation, center-out animation, renaming) | Flat alphabetical list |
+| **Custom Positioning** | **Drag-and-Drop** persistent layout reordering | Automatic alphabetical sort |
+| **Hiding Apps** | Right-click hiding, batch edit mode, search in hidden apps | Fixed uninstaller exclusions |
+| **Rendering Backend** | High-performance GDI/AlphaBlend DIB pipeline | Direct2D / DirectWrite |
+| **Visual Styles** | **macOS Launchpad** and **Windows 11 Fluent** styles | macOS-inspired acrylic styling |
+| **Quick Actions** | Integrated power menu (Sleep, Shut Down, Restart, Lock) | Standard window dismissal |
+| **Context Menus** | Run as administrator, Open file location, Hide, Ungroup | Left-click launch only |
 
 ---
 
-### 🗂️ Grid Layout & Smart Scaling
-- **Customizable Grid:** Configure any layout from 4 to 12 columns and 3 to 8 rows per page.
-- **Intelligent Icon Sizing:** Scales icons smoothly from 50% to 150%, automatically pulling crisp, high-resolution assets.
-- **Smart Legacy Icon Cleanup:** Automatically detects and strips the awkward gray square borders and empty padding often added by Windows to older Win32 icons (e.g., 7-Zip), upscaling the actual icon smoothly with bilinear interpolation.
-- **Compact Selection Cards:** Features a sleek, semitransparent rounded card that wraps both the app icon and label, animating smoothly with an interactive title zoom on hover.
+## ⌨️ Controls & Shortcut Cheat Sheet
+
+| Input | Action |
+| :--- | :--- |
+| **Windows Key / Ctrl + Esc** | Open / Close StartPad |
+| **Type alphanumeric keys** | Search applications |
+| **Backspace / Ctrl + Backspace** | Delete character / Delete previous word |
+| **Arrow Keys / Tab** | Navigate icon selection (flips pages at edges) |
+| **Enter** | Launch selected app / Confirm search result |
+| **Ctrl + Shift + Enter** | Run selected app as Administrator |
+| **Click and Hold (~320ms)** | Pick up app or folder to drag and reorder |
+| **F2** | Rename selected folder |
+| **Esc** | Clear search query $\rightarrow$ Exit editing mode $\rightarrow$ Close folder $\rightarrow$ Close StartPad |
+| **Mouse Wheel / Page Up / Page Down** | Switch pages |
+| **Click outside grid** | Close StartPad |
 
 ---
 
-### 🔍 Instant Search & Quick Actions
-- **Type-to-Search:** Simply start typing anytime StartPad is open—no need to click into the search box first.
-- **Always-Active Focus Caret:** Clear visual cue in the search bar indicating ready-to-type status.
-- **Deep Search Toggle:** Option to search across all applications, including hidden ones, directly from the search bar menu.
-- **Instant Launch:** Press **Enter** to open the highlighted result, or **Ctrl + Shift + Enter** to run directly as administrator.
+## 🔧 Installation
+
+1. Install **[Windhawk](https://windhawk.net/)** if you haven't already.
+2. Open the Windhawk application and go to the **Mods** tab.
+3. If installing locally:
+   - Click **Create Local Mod** in the top-right corner.
+   - Replace the template code with the contents of `startpad.wh.cpp`.
+   - Click **Compile**.
+4. Enable the mod and configure your desired grid columns, rows, icon sizes, and background blur in the **Settings** tab.
 
 ---
 
-### 📁 Folders & Organization
-- **Easy Drag-and-Drop:** Drag one application icon over another to create a folder instantly, or drag apps in/out to reorganize your grid.
-- **"Create Folder" Selection Mode:** Select multiple apps using checkmarks directly from the search bar menu to quickly bundle them into a new folder without dragging.
-- **Center-Out Folder Expansion:** Folders open directly from the center of the screen with smooth easing and inline name editing (**F2** or clicking the title).
-- **Edit Hidden Apps Mode:** Easily hide background tools, updaters, or unwanted shortcuts via the options menu or directly through right-click.
-- **Automatic Uninstaller Filtering:** Automatically cleans up shortcuts pointing to uninstallers (`unins000.exe`, `uninstall.exe`, etc.) to keep your launcher clutter-free.
+## 📄 Credits & License
 
----
-
-### ⌨️ Navigation & Controls
-- **Smart 2D Arrow Navigation:** Move smoothly across rows and columns using arrow keys; navigating past the outer edge seamlessly flips to the previous or next page.
-- **Mouse & Touchpad Friendly:** Click-and-drag swipe support, mouse wheel page turning, and clickable bottom pagination dots.
-- **Integrated Power Menu:** A dedicated power button aligned with the grid dots offers quick access to **Lock**, **Sign out**, **Sleep**, **Shut down**, and **Restart**.
-- **Safe Click Dismissal:** Clicking outside open context menus dismisses only the menu, preventing accidental launcher closures.
-- **Multilingual Support:** Localized interface strings for English, Spanish, French, German, Italian, Portuguese, Russian, Chinese, Japanese, and Korean.
-
----
-
-## 🛠️ Installation
-
-1. Install [Windhawk](https://windhawk.net/) if you haven't already.
-2. Open Windhawk and navigate to the **Mods** tab.
-3. Click **Create Local Mod** (or paste into your mod list).
-4. Paste the contents of `winlaunchpad.cpp` and click **Compile**.
-5. Enable the mod and customize your preferences via the **Settings** tab.
+- Core Start view interception techniques (`XamlLauncher::ShowStartView` hook, `kShowMethodKeyboard` / `kShowFlagKeyboard` flag detection, and secondary Explorer process filtering) adapted from **[Fullscreen Start (Launchpad style)](https://github.com/RafaelMendes1407)** by **Rafael Mendes**, licensed under the MIT License (Copyright (c) Rafael Mendes).
+- Developed by **Frankh93**.
+- Released under the **[MIT License](LICENSE)**.
