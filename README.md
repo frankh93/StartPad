@@ -1,5 +1,7 @@
 # StartPad
 
+![StartPad Preview](startpad-preview.png)
+
 A lightweight, native **macOS-style fullscreen application launcher** built as a [Windhawk](https://windhawk.net/) mod to replace the default Windows 11 Start menu.
 
 Inspired by Apple’s macOS Launchpad, **StartPad** provides an intuitive, distraction-free environment to browse, organize, and launch all your installed software with fluid animations and extensive customization.
