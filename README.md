@@ -1,6 +1,6 @@
 # StartPad
 
-![StartPad Preview](https://raw.githubusercontent.com/frankh93/StartPad/main/startpad-preview.png)
+![StartPad Preview](https://raw.githubusercontent.com/frankh93/StartPad/main/preview.png)
 
 A native, macOS Launchpad-style fullscreen application launcher for Windows 11 built as a [Windhawk](https://windhawk.net/) mod. **StartPad** replaces the default Windows Start menu with a fluid, paginated app grid featuring drag-and-drop organization, interactive folders, customizable visual styling, and instant search.
 
