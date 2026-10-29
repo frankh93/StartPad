@@ -11,29 +11,11 @@
 // @license         MIT
 // ==/WindhawkMod==
 
-// ==WindhawkModSettings==
-/*
-[
-  { "triggerWinKey": true, "$name": "Open with the Windows key & Ctrl+Esc", "$description": "When off, the Windows key and Ctrl+Esc open the original Start menu." },
-  { "triggerStartButton": true, "$name": "Open with the taskbar Start button", "$description": "Left-clicks on the Start button open the launcher. When off, it opens the original Start menu." },
-  { "visualStyle": "macos", "$name": "Visual style", "$options": [ { "macos": "MacOS Style" }, { "windows": "Windows 11 Fluent" } ] },
-  { "gridColumns": 8, "$name": "Columns per page", "$description": "4 to 12 (Suggested: 8)." },
-  { "gridRows": 5, "$name": "Rows per page", "$description": "3 to 8 (Suggested: 5)." },
-  { "iconSize": 100, "$name": "Icon size (%)", "$description": "50 to 150. Relative to the default size for the chosen grid." },
-  { "backgroundDarkness": 35, "$name": "Background tint intensity (%)", "$description": "0 shows the blurred desktop as it is, 100 is a solid theme colour." },
-  { "blur": "medium", "$name": "Background blur", "$options": [ { "off": "Off (sharp desktop)" }, { "light": "Light" }, { "medium": "Medium" }, { "strong": "Strong" } ] },
-  { "animations": true, "$name": "Open/close animation", "$description": "Also skipped when Windows animations are turned off." },
-  { "hideUninstallers": true, "$name": "Automatically hide uninstallers", "$description": "Hides shortcuts like Uninstall, Desinstalar, unins000.exe, etc." },
-  { "showPowerButton": true, "$name": "Show power button (bottom right)" }
-]
-*/
-// ==/WindhawkModSettings==
-
 // ==WindhawkModReadme==
 /*
 # StartPad
 
-![StartPad Preview](https://raw.githubusercontent.com/frankh93/StartPad/main/startpad-preview.png)
+![StartPad Preview](https://raw.githubusercontent.com/frankh93/StartPad/main/preview.png)
 
 A macOS Launchpad-style fullscreen app launcher that replaces the Windows 11 Start menu, featuring horizontal paginated grids, interactive app folders, drag-and-drop reordering, and customizable visual themes.
 
@@ -82,6 +64,49 @@ Both mods replace the Start menu with a fullscreen app launcher, and **they cann
 - Licensed under the **MIT License**.
 */
 // ==/WindhawkModReadme==
+
+// ==WindhawkModSettings==
+/*
+- triggerWinKey: true
+  $name: Open with the Windows key & Ctrl+Esc
+  $description: When off, the Windows key and Ctrl+Esc open the original Start menu.
+- triggerStartButton: true
+  $name: Open with the taskbar Start button
+  $description: Left-clicks on the Start button open the launcher. When off, it opens the original Start menu.
+- visualStyle: macos
+  $name: Visual style
+  $options:
+  - macos: MacOS Style
+  - windows: Windows 11 Fluent
+- gridColumns: 8
+  $name: Columns per page
+  $description: "4 to 12 (Suggested: 8)."
+- gridRows: 5
+  $name: Rows per page
+  $description: "3 to 8 (Suggested: 5)."
+- iconSize: 100
+  $name: Icon size (%)
+  $description: 50 to 150. Relative to the default size for the chosen grid.
+- backgroundDarkness: 35
+  $name: Background tint intensity (%)
+  $description: 0 shows the blurred desktop as it is, 100 is a solid theme colour.
+- blur: medium
+  $name: Background blur
+  $options:
+  - "off": Off (sharp desktop)
+  - light: Light
+  - medium: Medium
+  - strong: Strong
+- animations: true
+  $name: Open/close animation
+  $description: Also skipped when Windows animations are turned off.
+- hideUninstallers: true
+  $name: Automatically hide uninstallers
+  $description: Hides shortcuts like Uninstall, Desinstalar, unins000.exe, etc.
+- showPowerButton: true
+  $name: Show power button (bottom right)
+*/
+// ==/WindhawkModSettings==
 
 #include <windows.h>
 #include <windowsx.h>
@@ -870,8 +895,6 @@ std::wstring GetCurrentUserSidString() {
     return result;
 }
 
-// Stores layout inside Windhawk's mod storage path so it is removed when the
-// mod is uninstalled, scoped by user SID so each user keeps their own layout.
 std::wstring LayoutPath(bool makeDir) {
     WCHAR dir[MAX_PATH];
     if (!Wh_GetModStoragePath(dir, ARRAYSIZE(dir))) return std::wstring();
@@ -3835,6 +3858,7 @@ bool HookShowStartView() {
         Wh_Log(L"Couldn't load twinui.pcshell.dll");
         return false;
     }
+    // twinui.pcshell.dll
     WindhawkUtils::SYMBOL_HOOK hooks[] = {
         {
             {LR"(public: virtual long __cdecl XamlLauncher::ShowStartView(enum IMMERSIVELAUNCHERSHOWMETHOD,enum IMMERSIVELAUNCHERSHOWFLAGS))"},
